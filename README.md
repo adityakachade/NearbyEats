@@ -19,7 +19,7 @@
 🔗 **Check out the live project:** [NearestEat](https://nearbyeats.netlify.app/)  
 
 ## Presentation  
-📂 **View the project presentation:** [Google Drive Link](your-presentation-link-here)  
+📂 **View the project presentation:** [Google Drive Link]([your-presentation-link-here](https://drive.google.com/file/d/1pIPx7QiL0NXjQ-cd4WzM7QbYQrqCQWBg/view?usp=drivesdk))  
 
 ## GitHub Repository  
 📂 **Explore the source code:** [NearbyEats GitHub Repo](https://github.com/adityakachade/NearbyEats)  
