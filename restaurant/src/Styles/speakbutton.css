@@ -1,0 +1,18 @@
+#speakerCtn {
+  margin: 1rem;
+}
+
+#micv {
+  border-radius: 50%;
+  padding: 0.5rem;
+}
+
+#micv:hover {
+  cursor: pointer;
+  background-color: aliceblue;
+}
+
+.dialog {
+  border-radius: 2rem;
+  width: 10rem;
+}
