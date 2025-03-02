@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Assistant for Restaurants</title>
+  </head>
+  <body>
+    <h1>Voice Assistant - Find Restaurant Menus</h1>
+
+    <button onclick="fetchRestaurants()">Find Nearby Restaurants</button>
+    <ul id="restaurantsList"></ul>
+
+    <button onclick="startVoiceSearch()">🎤 Speak Restaurant Name</button>
+    <p id="recognizedText"></p>
+
+    <h2>Menu:</h2>
+    <ul id="menuList"></ul>
+  </body>
+
+  <script>
+    function fetchRestaurants() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            let lat = position.coords.latitude;
+            let lng = position.coords.longitude;
+            console.log("lat lng", lat, lng);
+            console.log("Your precise location:", lat, lng);
+            const response = await fetch(
+              `http://localhost:5000/restaurants?lat=${lat}&lng=${lng}`
+            );
+            const data = await response.json();
+
+            document.getElementById("restaurantsList").innerHTML =
+              data.restaurants
+                .map((r) => `<li><b>${r.name}</b> 📍(${r.address})</li>`)
+                .join("");
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+            alert("Failed to get location. Please check GPS settings.");
+          },
+          { enableHighAccuracy: false }
+        );
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    function startVoiceSearch() {
+      const recognition = new (window.SpeechRecognition ||
+        window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+
+      recognition.onresult = async (event) => {
+        const restaurantName = event.results[0][0].transcript;
+        document.getElementById(
+          "recognizedText"
+        ).innerText = `Searching for: ${restaurantName}`;
+
+        // Fetch menu
+        const response = await fetch(
+          `http://localhost:5000/menu?name=${restaurantName}`
+        );
+        const data = await response.json();
+
+        document.getElementById("menuList").innerHTML = data.menu
+          .map((item) => `<li>${item}</li>`)
+          .join("");
+
+        // Speak out the menu
+        speakMenu(restaurantName, data.menu);
+      };
+
+      recognition.start();
+    }
+
+    function speakMenu(restaurantName, menuItems) {
+      console.log("i am running");
+
+      const speech = new SpeechSynthesisUtterance();
+      speech.text = `Here are the top items from ${restaurantName}: ${menuItems.join(
+        ", "
+      )}`;
+      //speech.lang = "en-US";
+      speech.lang = "en-IN";
+
+      console.log(speech.text);
+      function speakNow() {
+        let voices = speechSynthesis.getVoices();
+        console.log("Loaded voices:", voices);
+
+        if (voices.length === 0) {
+          console.log("No voices available, waiting for voices...");
+          speechSynthesis.onvoiceschanged = () => {
+            voices = speechSynthesis.getVoices();
+            console.log("Voices updated:", voices);
+            speech.voice =
+              voices.find((voice) => voice.lang === "en-IN") || voices[0];
+            console.log("Using voice:", speech.voice);
+            speechSynthesis.speak(speech);
+          };
+        } else {
+          speech.voice =
+            voices.find((voice) => voice.lang == "en-IN") || voices[0];
+          console.log("Using voice:", speech.voice);
+          speechSynthesis.speak(speech);
+        }
+      }
+
+      // Delay execution to ensure voices are loaded
+      setTimeout(speakNow, 500);
+    }
+  </script>
+</html>
