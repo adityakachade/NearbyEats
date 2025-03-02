@@ -30,3 +30,17 @@
    ```bash
    git clone "https://github.com/adityakachade/NearbyEats.git](https://github.com/adityakachade/NearbyEats"
    cd NearbyEats
+   Install dependencies:
+
+npm install
+Start the development server:
+
+bash
+npm run dev
+Open your browser and visit:
+
+##🚀 Meet Our Team 🚀
+
+Tarun - Frontend Developer
+Nikhil - Backend Developer
+Aditya Kachade -Team Lead
